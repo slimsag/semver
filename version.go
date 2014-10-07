@@ -95,23 +95,24 @@ func ParseVersion(vs string) Version {
 	}
 	vs = vs[1:] // Strip prefixed v
 
-	// Parse -dev suffix.
-	var v Version
-	v.Dev = strings.HasSuffix(vs, "-dev")
-	if v.Dev {
-		vs = strings.TrimSuffix(vs, "-dev")
-	}
+	// Parse -dev suffix now and store for later.
+	v := InvalidVersion
+	isDev := strings.HasSuffix(vs, "-dev")
+	vs = strings.TrimSuffix(vs, "-dev")
 
 	// Parse actual version number.
 	switch strings.Count(vs, ".") {
 	default:
-		return InvalidVersion
+		return v
 	case 0:
 		fmt.Sscanf(vs, "%d", &v.Major)
 	case 1:
 		fmt.Sscanf(vs, "%d.%d", &v.Major, &v.Minor)
 	case 2:
 		fmt.Sscanf(vs, "%d.%d.%d", &v.Major, &v.Minor, &v.Patch)
+	}
+	if v.Major != -1 {
+		v.Dev = isDev
 	}
 	return v
 }
