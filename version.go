@@ -46,7 +46,17 @@ func (v Version) String() string {
 }
 
 // Less tells if v is a lesser version than the other version.
+//
+// It follows semver specification (e.g. v1.200.300 is less than v2). A dev
+// version is *always* less than a non-dev version (e.g. v3-dev is less than
+// v2).
 func (v Version) Less(other Version) bool {
+	if v.Dev && !other.Dev {
+		return true
+	} else if other.Dev && !v.Dev {
+		return false
+	}
+
 	if v.Major < other.Major {
 		return true
 	} else if v.Major > other.Major {

@@ -26,6 +26,14 @@ var versionLessTests = []struct {
 		a:     Version{Major: 1, Minor: 1, Patch: 1},
 		b:     Version{Major: 1, Minor: 2, Patch: 1},
 		aLess: true,
+	}, {
+		a:     Version{Major: 1, Minor: 1, Patch: 1},
+		b:     Version{Major: 100, Minor: 200, Patch: 300, Dev: true},
+		aLess: false,
+	}, {
+		a:     Version{Major: 1, Minor: 1, Patch: 1, Dev: true},
+		b:     Version{Major: 1, Minor: 1, Patch: 1},
+		aLess: true,
 	},
 }
 
