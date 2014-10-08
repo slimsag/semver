@@ -33,7 +33,8 @@ type Handler struct {
 	// The host of this application, e.g. "example.org".
 	Host string
 
-	// If set to true then HTTPS requirement is disabled.
+	// If set to true then HTTPS is not used by default when a request's URL
+	// is missing a schema.
 	NoSecure bool
 
 	// The matcher used to resolve package URL's to their associated
