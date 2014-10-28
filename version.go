@@ -6,6 +6,8 @@ package semver
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -85,6 +87,9 @@ var InvalidVersion = Version{
 	Dev:   false,
 }
 
+// Matches strings like "1", "1.1", and "1.1.1".
+var vsRegexp = regexp.MustCompile(`^([0-9]+)[\.]?([0-9]*)[\.]?([0-9]*)`)
+
 // ParseVersion parses a version string in the form of:
 //
 //  "v1"
@@ -105,24 +110,30 @@ func ParseVersion(vs string) Version {
 	}
 	vs = vs[1:] // Strip prefixed v
 
-	// Parse -dev suffix now and store for later.
-	v := InvalidVersion
-	isDev := strings.HasSuffix(vs, "-dev")
-	vs = strings.TrimSuffix(vs, "-dev")
-
-	// Parse actual version number.
-	switch strings.Count(vs, ".") {
-	default:
-		return v
-	case 0:
-		fmt.Sscanf(vs, "%d", &v.Major)
-	case 1:
-		fmt.Sscanf(vs, "%d.%d", &v.Major, &v.Minor)
-	case 2:
-		fmt.Sscanf(vs, "%d.%d.%d", &v.Major, &v.Minor, &v.Patch)
+	// Split by the dash seperated suffix. We expect only one dash suffix, and
+	// if present it must be "dev".
+	dashSplit := strings.Split(vs, "-")
+	if len(dashSplit) > 2 || len(dashSplit) == 2 && dashSplit[1] != "dev" {
+		return InvalidVersion
 	}
-	if v.Major != -1 {
-		v.Dev = isDev
+
+	// We now use regexp to match the last part of the version string, which
+	// e.g. looks like "1", "1.1", or "1.1.1".
+	var (
+		m = vsRegexp.FindStringSubmatch(dashSplit[0])
+		v = InvalidVersion
+	)
+	if len(m) > 1 && len(m[1]) > 0 {
+		v.Major, _ = strconv.Atoi(m[1])
+	}
+	if len(m) > 2 && len(m[2]) > 0 {
+		v.Minor, _ = strconv.Atoi(m[2])
+	}
+	if len(m) > 3 && len(m[3]) > 0 {
+		v.Patch, _ = strconv.Atoi(m[3])
+	}
+	if v.Major != -1 && len(dashSplit) == 2 && dashSplit[1] == "dev" {
+		v.Dev = true
 	}
 	return v
 }

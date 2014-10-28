@@ -70,6 +70,8 @@ var versionParseTests = []struct {
 
 	// Invalid version strings.
 	{v: "v-dev", exp: InvalidVersion},
+	{v: "v1-foobar", exp: InvalidVersion},
+	{v: "v1-foo-bar", exp: InvalidVersion},
 	{v: "ga.v1.r.3.ba.4.ge", exp: InvalidVersion},
 }
 
