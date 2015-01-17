@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var rePkgVersion = regexp.MustCompile(`^([a-zA-Z0-9-]+).(v[0-9]+[\.]?[0-9]*[\.]?[0-9]*(?:\-dev)?)`)
+var rePkgVersion = regexp.MustCompile(`^([a-zA-Z0-9-]+).(v[0-9]+[\.]?[0-9]*[\.]?[0-9]*(?:\-unstable)?)`)
 
 // GitHub returns a URL Matcher that operates on a single GitHub user or
 // organization. For instance if the service was running at example.com and the
@@ -24,7 +24,7 @@ var rePkgVersion = regexp.MustCompile(`^([a-zA-Z0-9-]+).(v[0-9]+[\.]?[0-9]*[\.]?
 //  example.com/multi/folder/pkg.v3 → github.com/bob/multi-folder-pkg (branch/tag v3, v3.N, or v3.N.M)
 //  example.com/folder/pkg.v3/subpkg → github.com/bob/folder-pkg (branch/tag v3, v3.N, or v3.N.M)
 //  example.com/pkg.v3/folder/subpkg → github.com/bob/pkg (branch/tag v3, v3.N, or v3.N.M)
-//  example.com/pkg.v3-dev → github.com/bob/pkg (branch/tag v3-dev, v3.N-dev, or v3.N.M-dev)
+//  example.com/pkg.v3-unstable → github.com/bob/pkg (branch/tag v3-unstable, v3.N-unstable, or v3.N.M-unstable)
 //
 func GitHub(user string) Matcher {
 	f := func(u *url.URL) (repo *Repo, err error) {

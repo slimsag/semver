@@ -278,9 +278,9 @@ func (h *Handler) chooseRef(refs []*gitRef, v Version) (chosenHash string, ok bo
 			refV = ParseVersion(tag)
 		}
 
-		// Ensure that the major versions (and dev statuses) match the one we
-		// desire. If they don't then we skip this version.
-		if refV.Major != v.Major || refV.Dev != v.Dev {
+		// Ensure that the major versions (and unstable statuses) match the one
+		// we desire. If they don't then we skip this version.
+		if refV.Major != v.Major || refV.Unstable != v.Unstable {
 			continue
 		}
 

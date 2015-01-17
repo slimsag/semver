@@ -28,10 +28,10 @@ var versionLessTests = []struct {
 		aLess: true,
 	}, {
 		a:     Version{Major: 1, Minor: 1, Patch: 1},
-		b:     Version{Major: 100, Minor: 200, Patch: 300, Dev: true},
+		b:     Version{Major: 100, Minor: 200, Patch: 300, Unstable: true},
 		aLess: false,
 	}, {
-		a:     Version{Major: 1, Minor: 1, Patch: 1, Dev: true},
+		a:     Version{Major: 1, Minor: 1, Patch: 1, Unstable: true},
 		b:     Version{Major: 1, Minor: 1, Patch: 1},
 		aLess: true,
 	},
@@ -56,20 +56,20 @@ var versionParseTests = []struct {
 	{v: "v1", exp: Version{Major: 1, Minor: -1, Patch: -1}},
 	{v: "v1.2", exp: Version{Major: 1, Minor: 2, Patch: -1}},
 	{v: "v1.2.3", exp: Version{Major: 1, Minor: 2, Patch: 3}},
-	{v: "v100-dev", exp: Version{Major: 100, Minor: -1, Patch: -1, Dev: true}},
-	{v: "v1.24-dev", exp: Version{Major: 1, Minor: 24, Patch: -1, Dev: true}},
-	{v: "v14.2.34-dev", exp: Version{Major: 14, Minor: 2, Patch: 34, Dev: true}},
+	{v: "v100-unstable", exp: Version{Major: 100, Minor: -1, Patch: -1, Unstable: true}},
+	{v: "v1.24-unstable", exp: Version{Major: 1, Minor: 24, Patch: -1, Unstable: true}},
+	{v: "v14.2.34-unstable", exp: Version{Major: 14, Minor: 2, Patch: 34, Unstable: true}},
 
 	// Version strings must have 'v' prefix.
 	{v: "1", exp: InvalidVersion},
 	{v: "1.2", exp: InvalidVersion},
 	{v: "1.2.3", exp: InvalidVersion},
-	{v: "100-dev", exp: InvalidVersion},
-	{v: "1.24-dev", exp: InvalidVersion},
-	{v: "14.2.34-dev", exp: InvalidVersion},
+	{v: "100-unstable", exp: InvalidVersion},
+	{v: "1.24-unstable", exp: InvalidVersion},
+	{v: "14.2.34-unstable", exp: InvalidVersion},
 
 	// Invalid version strings.
-	{v: "v-dev", exp: InvalidVersion},
+	{v: "v-unstable", exp: InvalidVersion},
 	{v: "v1-foobar", exp: InvalidVersion},
 	{v: "v1-foo-bar", exp: InvalidVersion},
 	{v: "ga.v1.r.3.ba.4.ge", exp: InvalidVersion},
@@ -81,8 +81,8 @@ func TestVersionParsing(t *testing.T) {
 		want := tst.exp
 		if got != want {
 			t.Logf("%q\n", tst.v)
-			t.Logf("got Major=%d Minor=%d Patch=%d Dev=%t\n", got.Major, got.Minor, got.Patch, got.Dev)
-			t.Fatalf("want Major=%d Minor=%d Patch=%d Dev=%t\n", want.Major, want.Minor, want.Patch, want.Dev)
+			t.Logf("got Major=%d Minor=%d Patch=%d Unstable=%t\n", got.Major, got.Minor, got.Patch, got.Unstable)
+			t.Fatalf("want Major=%d Minor=%d Patch=%d Unstable=%t\n", want.Major, want.Minor, want.Patch, want.Unstable)
 		}
 	}
 }
@@ -95,9 +95,9 @@ var versionStringTests = []struct {
 	{v: "v1", exp: Version{Major: 1, Minor: -1, Patch: -1}},
 	{v: "v1.2", exp: Version{Major: 1, Minor: 2, Patch: -1}},
 	{v: "v1.2.3", exp: Version{Major: 1, Minor: 2, Patch: 3}},
-	{v: "v100-dev", exp: Version{Major: 100, Minor: -1, Patch: -1, Dev: true}},
-	{v: "v1.24-dev", exp: Version{Major: 1, Minor: 24, Patch: -1, Dev: true}},
-	{v: "v14.2.34-dev", exp: Version{Major: 14, Minor: 2, Patch: 34, Dev: true}},
+	{v: "v100-unstable", exp: Version{Major: 100, Minor: -1, Patch: -1, Unstable: true}},
+	{v: "v1.24-unstable", exp: Version{Major: 1, Minor: 24, Patch: -1, Unstable: true}},
+	{v: "v14.2.34-unstable", exp: Version{Major: 14, Minor: 2, Patch: 34, Unstable: true}},
 }
 
 func TestVersionString(t *testing.T) {
