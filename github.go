@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var rePkgVersion = regexp.MustCompile(`^([a-zA-Z0-9]+).(v[0-9]+[\.]?[0-9]*[\.]?[0-9]*(?:\-dev)?)`)
+var rePkgVersion = regexp.MustCompile(`^([a-zA-Z0-9-]+).(v[0-9]+[\.]?[0-9]*[\.]?[0-9]*(?:\-dev)?)`)
 
 // GitHub returns a URL Matcher that operates on a single GitHub user or
 // organization. For instance if the service was running at example.com and the
