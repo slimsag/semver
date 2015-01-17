@@ -39,18 +39,21 @@ type Repo struct {
 type Status int
 
 const (
-	// The request was not handled.
+	// Unhandled is a status return when the request was not handled at all.
 	Unhandled Status = iota
 
-	// The request was handled.
+	// Handled is the status returned when the request was handled completely.
 	Handled
 
-	// The request was not handled, but was for the package page (e.g. when
-	// viewing in a web browser).
+	// PkgPage is the status returned when the request was not handled, but was
+	// for the package page (e.g. when viewing the package's import path in a
+	// web browser).
 	PkgPage
 )
 
 var (
+	// ErrNotPackageURL is the error returned by matchers when the URL is not
+	// a valid package import path URL.
 	ErrNotPackageURL = errors.New("not a valid package URL")
 )
 

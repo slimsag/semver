@@ -73,7 +73,7 @@ func TestGitPktLineStream(t *testing.T) {
 
 		// Decode the next pkt-line from the stream.
 		pl, lineBreak, n, err := gitNextPktLine(stream)
-		if err == gitPktLineNeedMore {
+		if err == errGitPktLineNeedMore {
 			// End of stream. Validate that we got the correct number of
 			// results.
 			if i != len(results) {

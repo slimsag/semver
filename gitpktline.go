@@ -28,12 +28,13 @@ func (pl gitPktLine) Bytes() []byte {
 }
 
 var (
-	gitPktLineNeedMore = errors.New("need more data")
+	errGitPktLineNeedMore = errors.New("need more data")
 )
 
 // gitNextPktLine parses the next pkt-line from the given binary data.
 //
-// If the data provided is not enough then err=gitPktLineNeedMore is returned.
+// If the data provided is not enough then err=errGitPktLineNeedMore is
+// returned.
 //
 // A special line prefixed with "0000" returns lineBreak=true directly.
 //
@@ -48,7 +49,7 @@ func gitNextPktLine(data []byte) (pl gitPktLine, lineBreak bool, n int, err erro
 
 	// Need at least four bytes.
 	if len(data) < 4 {
-		err = gitPktLineNeedMore
+		err = errGitPktLineNeedMore
 		return
 	}
 
@@ -66,7 +67,7 @@ func gitNextPktLine(data []byte) (pl gitPktLine, lineBreak bool, n int, err erro
 		return
 	}
 	if int(length) > len(data) {
-		err = gitPktLineNeedMore
+		err = errGitPktLineNeedMore
 		return
 	}
 	pl = gitPktLine(data[4:length])
