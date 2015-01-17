@@ -61,4 +61,4 @@
 // The package exposes a matcher only for GitHub. But others can be implemented
 // outside the package as well for e.g. Google Code or privately hosted Git
 // repositories.
-package semver
+package semver // import "azul3d.org/semver.v2"
