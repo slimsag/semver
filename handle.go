@@ -22,6 +22,9 @@ import (
 var goGetTmpl = template.Must(template.New("").Parse(`<html>
 	<head>
 		<meta name="go-import" content="{{.Prefix}} {{.VCS}} {{.RepoRoot}}">
+		{{if .GoSource}}
+			<meta name="go-source" content="{{.GoSource}}">
+		{{end}}
 	</head>
 	<body>
 go get {{.PkgPath}}
@@ -139,6 +142,7 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) (s Status, err 
 			"RepoRoot": repoRoot,
 			"Prefix":   pkgRoot,
 			"PkgPath":  path.Join(h.Host, r.URL.Path),
+			"GoSource": repo.GoSource,
 		})
 		return Handled, err
 	}
@@ -182,6 +186,9 @@ func (h *Handler) sanitize(method string, u *url.URL) *url.URL {
 	u.Path = strings.TrimSuffix(u.Path, "/info/refs")
 	u.Path = strings.TrimSuffix(u.Path, "/git-upload-pack")
 	u.Path = strings.TrimSuffix(u.Path, ".git")
+
+	// Ensure the URL has a proper host.
+	u.Host = h.Host
 	return u
 }
 

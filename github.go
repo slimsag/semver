@@ -18,6 +18,44 @@ var rePkgVersion = regexp.MustCompile(`^([a-zA-Z0-9-]+).(v[0-9]+[\.]?[0-9]*[\.]?
 // github is a Matcher that represents a single GitHub user or organization.
 type github string
 
+// githubGoSource returns a go-source meta-tag for the given repository and go
+// get URL.
+func githubGoSource(r *Repo, u *url.URL) string {
+	// The Go package path coorisponding to the repository root, for example:
+	//
+	//  right: azul3d.org/gfx.v2
+	//  wrong: azul3d.org/gfx.v2/window
+	//
+	prefix := path.Join(u.Host, strings.TrimSuffix(u.Path, r.SubPath))
+
+	// Default to godoc.org's home:
+	home := "_"
+
+	// A basic GitHub repository URL.
+	ghURL := *r.URL
+	if len(ghURL.Scheme) == 0 {
+		ghURL.Scheme = "https"
+	}
+
+	// Build a directory-view URL like so:
+	//
+	//  https://github.com/go-yaml/yaml/tree/v2{/dir}
+	//
+	dirURL := ghURL
+	dirURL.Path = path.Join(dirURL.Path, "tree", r.Version.String())
+	dir := dirURL.String() + "{/dir}"
+
+	// Build a file-view URL like so:
+	//
+	//  https://github.com/go-yaml/yaml/blob/v2{/dir}/{file}#L{line}
+	//
+	fileURL := ghURL
+	fileURL.Path = path.Join(fileURL.Path, "blob", r.Version.String())
+	file := fileURL.String() + "{/dir}/{file}#L{line}"
+
+	return strings.Join([]string{prefix, home, dir, file}, " ")
+}
+
 // Match implements the Matcher interface.
 func (user github) Match(u *url.URL) (repo *Repo, err error) {
 	// Split the path elements. If any element is an empty string then it
@@ -76,9 +114,15 @@ func (user github) Match(u *url.URL) (repo *Repo, err error) {
 		URL: &url.URL{
 			Scheme: u.Scheme,
 			Host:   "github.com",
-			Path:   path.Join(string(user), repoName) + ".git",
+			Path:   path.Join(string(user), repoName),
 		},
 	}
+
+	// Attach the go-source meta-tag.
+	repo.GoSource = githubGoSource(repo, u)
+
+	// TODO(slimsag): godoc.org requires that repos end in .git: very strange.
+	repo.URL.Path += ".git"
 	return
 }
 

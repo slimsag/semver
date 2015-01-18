@@ -32,6 +32,13 @@ type Repo struct {
 	//  Repo.URL.String + repo.SubPath == "https://example.com/pkg/subpkg"
 	//
 	SubPath string
+
+	// GoSource is literally the go-source meta tag content string. See the PR
+	// for information on the go-source meta tag:
+	//
+	//  https://github.com/golang/gddo/pull/212#issue-50104435
+	//
+	GoSource string
 }
 
 // Status represents a single status code returned by a Handler's attempt to
