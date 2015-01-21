@@ -21,7 +21,7 @@ type github string
 // githubGoSource returns a go-source meta-tag for the given repository and go
 // get URL.
 func githubGoSource(r *Repo, u *url.URL) string {
-	// The Go package path coorisponding to the repository root, for example:
+	// The Go package path corresponding to the repository root, for example:
 	//
 	//  right: azul3d.org/gfx.v2
 	//  wrong: azul3d.org/gfx.v2/window
