@@ -293,7 +293,7 @@ func (h *Handler) chooseRef(refs []*gitRef, v Version) (chosenHash string, ok bo
 
 		// Add it to the version list for sorting.
 		verList = append(verList, refVersion{
-			Version: v,
+			Version: refV,
 			gitRef:  ref,
 		})
 	}
