@@ -308,7 +308,7 @@ func (h *Handler) chooseRef(refs []*gitRef, v Version) (chosenHash string, ok bo
 	}
 
 	// Sort the version list.
-	sort.Sort(verList)
+	sort.Sort(sort.Reverse(verList))
 
 	// What if the version list contains both a tag and branch with the same
 	// version? We always choose the branch. Do this now.
