@@ -16,7 +16,9 @@ import (
 var rePkgVersion = regexp.MustCompile(`^([a-zA-Z0-9-]+).(v[0-9]+[\.]?[0-9]*[\.]?[0-9]*(?:\-unstable)?)`)
 
 // github is a Matcher that represents a single GitHub user or organization.
-type github string
+type github struct {
+	host, user string
+}
 
 // githubGoSource returns a go-source meta-tag for the given repository and go
 // get URL.
@@ -113,8 +115,8 @@ func (user github) Match(u *url.URL) (repo *Repo, err error) {
 		SubPath: repoSubPath,
 		URL: &url.URL{
 			Scheme: u.Scheme,
-			Host:   "github.com",
-			Path:   path.Join(string(user), repoName),
+			Host:   user.host,
+			Path:   path.Join(user.user, repoName),
 		},
 	}
 
@@ -138,5 +140,17 @@ func (user github) Match(u *url.URL) (repo *Repo, err error) {
 //  example.com/pkg.v3-unstable → github.com/bob/pkg (branch/tag v3-unstable, v3.N-unstable, or v3.N.M-unstable)
 //
 func GitHub(user string) Matcher {
-	return github(user)
+	return github{"github.com", user}
+}
+
+// GitHub returns a URL Matcher that operates on a single GitHub user or organization
+// on a custom domain instance of github ee or gitlab.
+// For instance if the service was running at example.com, the custom host was gitlab.com and the
+// user string was "bob", it would match URLS in the pattern of:
+//
+//  example.com/pkg.v3 → gitlab.com/bob/pkg (branch/tag v3, v3.N, or v3.N.M)
+//  example.com/folder/pkg.v3 → gitlab.com/bob/folder-pkg (branch/tag v3, v3.N, or v3.N.M)
+//
+func GitHubCustomHost(host, user string) Matcher {
+	return github{host, user}
 }
